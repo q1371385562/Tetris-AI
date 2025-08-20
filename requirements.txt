@@ -1,5 +1,6 @@
-numpy~=1.20.3
-keyboard~=0.13.5
-numba~=0.54.1
-matplotlib~=3.5.1
-mss~=6.1.0
+numpy>=1.26
+keyboard>=0.13.5
+numba>=0.61
+matplotlib>=3.8
+mss>=6.1
+
