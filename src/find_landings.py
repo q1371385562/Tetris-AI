@@ -37,12 +37,7 @@ def land(field: np.ndarray, piece: np.ndarray, x_pos: int, piece_idx: int) -> np
 
 
 def all_landings(field: np.array, piece_index: int) -> List[Position]:
-    """
-    calculates all possible results
-    :param field:
-    :param piece_index:
-    :return: Position
-    """
+    """计算给定方块的所有可能落点"""
     results = []
     for rotation in range(len(pieces[piece_index])):
         for x_pos in range(-3, 10):

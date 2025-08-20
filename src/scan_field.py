@@ -12,30 +12,30 @@ piece_colors = CONFIG['piece colors']
 
 
 def simplified(pixels: np.array) -> np.array:
-    """
-    create a 2d array with 1 on position of a piece pixel and 0 on empty pixel
-    :param pixels: pixels from screen in BGR
-    :return: field of shape (pixels.shape[0], pixels.shape[1]) with 1 if this pixel has a piece
+    """将截图转为仅含方块与空格的二维数组
+
+    :param pixels: 屏幕 BGR 像素
+    :return: 仅包含 0/1 的棋盘数组
     """
     dark_boundary = [130, 100, 90]
     if CONFIG['tetrio garbage']:
-        # lower dark excluded boundary for garbage
+        # 对垃圾行放宽暗色阈值
         dark_boundary = [70, 60, 60]
-    field0 = np.array(pixels[:, :, 0] < dark_boundary[0], int)  # blue
-    field1 = np.array(pixels[:, :, 1] < dark_boundary[1], int)  # green
-    field2 = np.array(pixels[:, :, 2] < dark_boundary[2], int)  # red
-    # these are too dark on all colors to be a piece
+    field0 = np.array(pixels[:, :, 0] < dark_boundary[0], int)  # 蓝色通道
+    field1 = np.array(pixels[:, :, 1] < dark_boundary[1], int)  # 绿色通道
+    field2 = np.array(pixels[:, :, 2] < dark_boundary[2], int)  # 红色通道
+    # 三个通道都很暗的像素必定不是方块
     dark_pixels = field0 * field1 * field2
 
     field_white0 = np.array(pixels[:, :, 0] > 200, int)
     field_white1 = np.array(pixels[:, :, 1] > 200, int)
     field_white2 = np.array(pixels[:, :, 2] > 200, int)
-    # these are too bright on all colors to be a piece
+    # 三个通道都很亮的像素也不是方块
     white_pixels = field_white0 * field_white1 * field_white2
 
-    # combine dark and bright to get all pixels that are NOT a tetris piece
+    # 结合暗像素和亮像素，得到所有非方块像素
     excluded_pixels = dark_pixels + white_pixels
-    # make 1 where piece and 0 where empty
+    # 方块处为 1，空格为 0
     field = 1 - excluded_pixels
     return field
 
@@ -54,16 +54,16 @@ def get_figure_by_color(screen: np.array):
     for i in range(len(piece_colors)):
         distances[i] = cmp_pixel(pixels, piece_colors[i])
 
-    min_distances = np.min(distances, axis=1)  # shape (len(piece_colors),)
+    min_distances = np.min(distances, axis=1)  # 形状为 (len(piece_colors),)
     if np.min(min_distances) < 30:
         return np.argmin(min_distances)
     return -1
 
 
 def get_field(interactive_setup: Optional[InteractiveSetup] = None) -> (np.array, int):
-    """
-    takes a screenshot and computes playing grid
-    :return: field grid, next piece id
+    """截取屏幕并计算棋盘状态
+
+    :return: 棋盘矩阵及下一块编号
     """
     img = np.array(screen_capture.grab(CONFIG['display consts'].get_screen_bounds()))
     field_img = CONFIG['display consts'].get_field_from_screen(img)
@@ -74,13 +74,13 @@ def get_field(interactive_setup: Optional[InteractiveSetup] = None) -> (np.array
     if interactive_setup is not None:
         interactive_setup.render_frame(field_img, pixels, next_img, next_piece)
 
-    # all empty initially
+    # 初始化为空棋盘
     field = np.zeros((20 + CONFIG['extra rows'], 10))
-    # find middles of grid cells
+    # 计算网格中心点
     cell_size = pixels.shape[1] // 10
     vertical_centers = np.array(np.linspace(cell_size // 2, pixels.shape[0] + cell_size // 2, 21 + CONFIG['extra rows'])[:-1], int)
     if vertical_centers[-1] > pixels.shape[0]:
-        print("Width to height ratio is not close to 1:2, so the cell size is not correct")
+        print("宽高比例非 1:2，单元格大小可能不正确")
         return field, next_piece
     horizontal_centers = np.array(np.linspace(cell_size // 2, pixels.shape[1] + cell_size // 2, 11)[:-1], int)
 
@@ -90,7 +90,7 @@ def get_field(interactive_setup: Optional[InteractiveSetup] = None) -> (np.array
     for v_offset in steps:
         for h_offset in steps:
             offsets_to_check.append((v_offset, h_offset))
-    # go through all cell centers
+    # 遍历所有单元格中心
     for i, v in enumerate(vertical_centers):
         for j, h in enumerate(horizontal_centers):
             for k, (v_offset, h_offset) in enumerate(offsets_to_check):
@@ -99,6 +99,6 @@ def get_field(interactive_setup: Optional[InteractiveSetup] = None) -> (np.array
                 field[i][j] = 1
                 if CONFIG['print piece color'] and i < 3:
                     piece_bgr = field_img[v][h][:3].astype(dtype=int)
-                    print(f'RGB color of the new piece: '
+                    print(f'新方块的 RGB 颜色: '
                           f'({piece_bgr[2]}, {piece_bgr[1]}, {piece_bgr[0]})')
     return field, next_piece

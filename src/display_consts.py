@@ -1,17 +1,16 @@
 class DisplayConsts:
-    """
-    Stores key pixel positions to retrieve correct portions of the screen.
-    Should be set for each user separately.
+    """保存关键像素位置以截取屏幕。
+
+    每位用户都需要单独设置。
     """
     def __init__(self, top, bottom, left, right, next_top, next_bottom, next_left, next_right, num_extra_rows=0):
-        # corners of the playing grid (only of those 20x10 cells)
+        # 游戏区域的四个边界（仅 20x10 的主区域）
         self.top = top
         self.bottom = bottom
         self.left = left
         self.right = right
 
-        # small portion of the screen where the next piece is
-        # no need to include the whole piece
+        # 下一块所在的小区域，无需包含整块
         self.next_top = next_top
         self.next_bottom = next_bottom
         self.next_left = next_left
@@ -36,9 +35,7 @@ class DisplayConsts:
                    self.next_left-self.horizontal_offset:self.next_right-self.horizontal_offset]
 
     def get_screen_bounds(self):
-        """
-        Provides the box that has to be captured to get all necessary information
-        """
+        """返回需要截取的屏幕区域"""
         bottom = max(self.bottom, self.next_bottom)
         right = max(self.right, self.next_right)
         return {

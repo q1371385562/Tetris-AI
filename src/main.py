@@ -22,18 +22,18 @@ def main():
         ConstantsGUI(CONFIG['display consts'])
         interactive_setup = InteractiveSetup()
 
-    # call jit-compiling functions to compile them
+    # 预先调用以完成编译
     ai.calc_best(np.zeros((20, 10), dtype=int), 0)
     field, _ = get_field()
     可视化.update(field)
     print("编译完成")
 
-    # infinite playing cycle
+    # 无限循环开始游戏
     while True:
-        # get playing grid and the next piece
+        # 获取当前棋盘和下一块
         field, next_piece = get_field(interactive_setup)
         可视化.update(field)
-        # parse current tetris piece
+        # 解析当前方块类型
         piece_idx = type_figure_ext(field[:5])
         if piece_idx is None:
             if not CONFIG['gave warning']:
@@ -45,29 +45,29 @@ def main():
             print(f'刚刚打印颜色的方块编号：{piece_idx}')
 
         if CONFIG['debug status'] >= 3:
-            # in the interactive setup, do not play the game
+            # 交互式设置模式下不进行游戏
             continue
 
-        # hold if nothing is held
+        # 若暂存槽为空则先暂存
         if ai.held_piece == -1:
             ai.hold_piece(piece_idx)
             can_hold_flag = False
             continue
 
-        # shenanigans for better parsing of the original game
+        # 为更好识别原版游戏的特殊处理
         if CONFIG['game'] == 'original':
             if position is not None and position.expect_tetris:
-                # hoping that it was not a misclick, not taking a screenshot because TETRIS blocks the view
+                # 假设不是误操作，TETRIS 动画遮挡界面因此不截图
                 field = np.zeros((3, 10), dtype=np.int)
                 field = np.concatenate((field, ai.clear_line(position.field)[0]))
                 time.sleep(0.2)
             elif not ai.scared:
                 field, next_piece = get_field()
 
-        # check held keys for runtime AI tuning
+        # 检查按键以调节运行时参数
         ai.runtime_tuning()
 
-        # check if the result is expected
+        # 检查得分是否与预期一致
         actual_score = ai.get_score(field[3:])[0]
         if CONFIG['debug status'] >= 1:
             if expected_rwd != actual_score:
@@ -77,11 +77,11 @@ def main():
                 print(field)
             print(f'当前得分 {actual_score}')
 
-        # next piece is not recognized
+        # 未识别到下一块
         if next_piece == -1:
             if CONFIG['debug status'] >= 1:
                 print("未知的下一块")
-            next_piece = 1  # assume square as it is the most neutral one
+            next_piece = 1  # 假设为方块作为中性选择
 
         calc_start_time = time.time()
         # 计算最佳落点
@@ -97,9 +97,9 @@ def main():
                 print('期待 TETRIS')
 
         expected_rwd = ai.get_score(ai.clear_line(position.field)[0])[0]
-        # emulate key presses to place the piece
+        # 模拟按键放置方块
         ai.place_piece(position.piece, position.rotation, position.x_pos, ai.find_roofs(position.field)[1])
-        # wait for everything to settle down
+        # 等待方块落定
         ai.place_piece_delay()
 
         can_hold_flag = True

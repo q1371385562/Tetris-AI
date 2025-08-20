@@ -1,22 +1,25 @@
 import ctypes
 import time
 
+import ctypes
+import time
+
 from config import CONFIG
 
 SendInput = ctypes.windll.user32.SendInput
 
-rotate_k = 0x11  # W
-mv_left = 0x1E   # A
-place_k = 0x1F   # S
-mv_right = 0x20  # D
-hold = 0x10      # Q
-mv_down = 0x12   # E
-rot_counterclock = 0x13  # R
+rotate_k = 0x11  # W 键
+mv_left = 0x1E   # A 键
+place_k = 0x1F   # S 键
+mv_right = 0x20  # D 键
+hold = 0x10      # Q 键
+mv_down = 0x12   # E 键
+rot_counterclock = 0x13  # R 键
 
 left_mouse = 0x100
 right_mouse = 0x101
 
-# C struct redefinitions
+# C 结构体定义
 PUL = ctypes.POINTER(ctypes.c_ulong)
 
 
@@ -54,7 +57,7 @@ class Input(ctypes.Structure):
                 ("ii", Input_I)]
 
 
-# Actual Functions
+# 实际调用函数
 def press_key(hex_code):
     extra = ctypes.c_ulong(0)
     ii_ = Input_I()

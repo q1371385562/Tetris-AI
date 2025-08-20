@@ -1,5 +1,6 @@
 import numpy as np
 
+import numpy as np
 from config import CONFIG
 
 array_of_figures = np.array([
@@ -48,7 +49,7 @@ array_of_figures = np.array([
 ])
 
 
-# 0 - line, 1 - square, 2 - T(flip), 3 - |__, 4 - __|, 5 - -|_,6 - _|-
+# 0 - 长条，1 - 方块，2 - T，3 - L，4 - 反L，5 - S，6 - Z
 def type_of_figure(arr):
     figure = [[arr[0][3], arr[0][4], arr[0][5], arr[0][6]],
               [arr[1][3], arr[1][4], arr[1][5], arr[1][6]]]
@@ -78,14 +79,14 @@ def type_figure_ext(field):
 
 
 def piece_weight(figure):
-    weights = [0, 8, 7, 7, 7, 10, 10]  # additional score
+    weights = [0, 8, 7, 7, 7, 10, 10]  # 额外得分
     return weights[figure]
 
 
 def find_figure(field, piece: int, exp_x_pos, up_to):
     possible = []
     if CONFIG['debug status'] >= 1:
-        print(f'looking up to {up_to}')
+        print(f'搜索至 {up_to} 行')
     for rot in range(len(array_of_figures[piece])):
         for y_pos in range(up_to):
             for x_pos in range(exp_x_pos-3, exp_x_pos+4):
