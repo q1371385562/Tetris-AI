@@ -3,7 +3,6 @@ from typing import Optional
 import matplotlib.pyplot as plt
 import numpy as np
 from mss import mss
-from numba import jit
 
 from config import CONFIG
 from src.display_interacive_setup import InteractiveSetup
@@ -41,8 +40,8 @@ def simplified(pixels: np.array) -> np.array:
     return field
 
 
-@jit(nopython=True)
 def cmp_pixel(pixels, color):
+    """计算像素与颜色的曼哈顿距离"""
     return np.abs(pixels[:, 0] - color[2]) + \
            np.abs(pixels[:, 1] - color[1]) + \
            np.abs(pixels[:, 2] - color[0])

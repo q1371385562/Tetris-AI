@@ -23,6 +23,12 @@ Bot playing in mode 2, in another game
 ## Usage guide
 
 ### How to run
+Before running the bot, install the dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
 1. Take a screenshot of your Tetris game
 2. Go to `config.py` and define a `DisplayConsts` instance
 3. Set 'display consts' in `CONFIG` to your instance

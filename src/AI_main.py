@@ -1,7 +1,5 @@
 from typing import List
 
-from numba import jit
-
 from find_landings import all_landings
 import numpy as np
 from direct_keys import *
@@ -50,13 +48,8 @@ class AI:
         return field, full_cnt
 
     @staticmethod
-    @jit(nopython=True)
-    def find_roofs(field: np.array) -> (int, int, np.array, int):
-        """
-        Finds blank squares under landed pieces and related info
-        :param field:
-        :return: blank_cnt, max height, [height of columns], blank_cumulative_depth
-        """
+    def find_roofs(field: np.ndarray) -> (int, int, np.ndarray, int):
+        """统计方块上方的空格数量和高度信息"""
         tops = np.zeros((10, 2))
         blank_cnt = 0
         blank_depth = 0
@@ -66,15 +59,14 @@ class AI:
                     if tops[j][0] == 0:
                         tops[j][0] = 17 - i
                     tops[j][1] += 1
-                elif not field[i][j] and tops[j][0] != 0:
+                elif tops[j][0] != 0:
                     blank_cnt += 1
                     blank_depth += tops[j][1] - 1
         return blank_cnt, int(np.max(tops[:, 0])), tops[:, 0], blank_depth
 
     @staticmethod
-    @jit(nopython=True)
-    def almost_full_line(field):
-        score = 0
+    def almost_full_line(field: np.ndarray) -> float:
+        score = 0.0
         line_width = len(field[0])
         for i in range(len(field)):
             ssum = np.sum(field[i])
@@ -85,15 +77,11 @@ class AI:
         return score
 
     @staticmethod
-    @jit(nopython=True)
-    def find_hole(tops):
-        """
-        A hole is a column such that neighbouring columns are higher by more than 2.
-        Such column can only be filled by a long piece without creating a blank.
-        """
+    def find_hole(tops: np.ndarray) -> int:
+        """统计左右两侧高度差超过 2 的“坑”数量"""
         cnt_hole = 0
         previous_height = 20
-        tops[-1] = 20  # not using last column, so lets say its high
+        tops[-1] = 20  # 最右边列暂不使用，视为很高
         for i in range(1, len(tops) - 1):
             if previous_height - 2 > tops[i] and tops[i] < tops[i + 1] - 2:
                 cnt_hole += 1

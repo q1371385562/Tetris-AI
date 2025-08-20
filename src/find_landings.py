@@ -2,38 +2,27 @@ from copy import deepcopy
 from typing import List
 
 import numpy as np
-from numba import jit
 
 from position import Position
 from figures import array_of_figures as pieces
 
 
-@jit(nopython=True)
 def check_collision(field, piece, piece_pos, piece_idx):
     r = 4
     if piece_idx != 0:
-        # only the line takes 4x4 grid, so for other pieces only check 3x3
+        # 只有长条方块会占满 4x4 网格，其余方块只需检查 3x3
         r -= 1
     for i in range(r):
         for j in range(r):
             if piece[i][j]:
-                if (i + piece_pos[0] >= len(field)) or (j + piece_pos[1] >= len(field[0])) or (i + piece_pos[0] < 0) or\
+                if (i + piece_pos[0] >= len(field)) or (j + piece_pos[1] >= len(field[0])) or (i + piece_pos[0] < 0) or \
                         (j + piece_pos[1] < 0) or field[i + piece_pos[0]][j + piece_pos[1]]:
                     return True
     return False
 
 
-@jit(nopython=True)
-def land(field: np.array, piece: np.array, x_pos: int, piece_idx: int) -> np.array:
-    """
-    simulates a piece falling from a set position onto the field
-    helps predict the outcome of an action
-    :param field: np.array, WILL BE MODIFIED
-    :param piece: array that tells the shape of the piece (with rotation applied)
-    :param x_pos: horizontal position of the piece
-    :param piece_idx: piece index
-    :return: resulting field
-    """
+def land(field: np.ndarray, piece: np.ndarray, x_pos: int, piece_idx: int) -> np.ndarray:
+    """模拟方块从指定位置下落至棋盘"""
     pos_now = [0, x_pos]
     while not check_collision(field, piece, pos_now, piece_idx):
         pos_now[0] += 1
