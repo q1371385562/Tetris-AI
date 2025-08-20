@@ -85,7 +85,7 @@ def piece_weight(figure):
 
 def find_figure(field, piece: int, exp_x_pos, up_to):
     possible = []
-    if CONFIG['debug status'] >= 1:
+    if CONFIG['调试等级'] >= 1:
         print(f'搜索至 {up_to} 行')
     for rot in range(len(array_of_figures[piece])):
         for y_pos in range(up_to):

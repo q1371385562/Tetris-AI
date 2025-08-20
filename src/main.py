@@ -25,8 +25,8 @@ def main():
     position = None
     interactive_setup = None
     可视化 = Visualizer()
-    if CONFIG['debug status'] >= 3:
-        ConstantsGUI(CONFIG['display consts'])
+    if CONFIG['调试等级'] >= 3:
+        ConstantsGUI(CONFIG['显示常量'])
         interactive_setup = InteractiveSetup()
 
     # 预先调用以完成编译
@@ -43,15 +43,15 @@ def main():
         # 解析当前方块类型
         piece_idx = type_figure_ext(field[:5])
         if piece_idx is None:
-            if not CONFIG['gave warning']:
+            if not CONFIG['已警告']:
                 print('\n未找到俄罗斯方块。\n'
                       '请确认在config.py中设置了DisplayConsts。\n')
-                CONFIG['gave warning'] = True
+                CONFIG['已警告'] = True
             continue
-        if CONFIG['print piece color']:
+        if CONFIG['打印方块颜色']:
             print(f'刚刚打印颜色的方块编号：{piece_idx}')
 
-        if CONFIG['debug status'] >= 3:
+        if CONFIG['调试等级'] >= 3:
             # 交互式设置模式下不进行游戏
             continue
 
@@ -62,7 +62,7 @@ def main():
             continue
 
         # 为更好识别原版游戏的特殊处理
-        if CONFIG['game'] == 'original':
+        if CONFIG['游戏类型'] == 'original':
             if position is not None and position.expect_tetris:
                 # 假设不是误操作，TETRIS 动画遮挡界面因此不截图
                 field = np.zeros((3, 10), dtype=np.int)
@@ -76,17 +76,17 @@ def main():
 
         # 检查得分是否与预期一致
         actual_score = ai.get_score(field[3:])[0]
-        if CONFIG['debug status'] >= 1:
+        if CONFIG['调试等级'] >= 1:
             if expected_rwd != actual_score:
                 winsound.Beep(2500, 500)
                 print('\n操作偏差\n')
-            if CONFIG['debug status'] >= 2:
+            if CONFIG['调试等级'] >= 2:
                 print(field)
             print(f'当前得分 {actual_score}')
 
         # 未识别到下一块
         if next_piece == -1:
-            if CONFIG['debug status'] >= 1:
+            if CONFIG['调试等级'] >= 1:
                 print("未知的下一块")
             next_piece = 1  # 假设为方块作为中性选择
 
@@ -94,7 +94,7 @@ def main():
         # 计算最佳落点
         position = ai.choose_action_depth2(field[3:], piece_idx, next_piece, can_hold_flag)
 
-        if CONFIG['debug status'] >= 1:
+        if CONFIG['调试等级'] >= 1:
             # 打印调试信息
             print('计算耗时', time.time() - calc_start_time)
             print(f'为 {name_piece(position.piece)} 选择的落点：'
@@ -110,7 +110,7 @@ def main():
         ai.place_piece_delay()
 
         can_hold_flag = True
-        if CONFIG['debug status'] >= 1:
+        if CONFIG['调试等级'] >= 1:
             print()
 
 

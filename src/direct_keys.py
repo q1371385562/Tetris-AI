@@ -1,9 +1,6 @@
 import ctypes
 import time
 
-import ctypes
-import time
-
 from config import CONFIG
 
 SendInput = ctypes.windll.user32.SendInput
@@ -76,6 +73,6 @@ def release_key(hex_code):
 
 def click_key(hex_code):
     press_key(hex_code)
-    time.sleep(CONFIG['key press delay'])
+    time.sleep(CONFIG['按键延迟'])
     release_key(hex_code)
-    time.sleep(CONFIG['key press delay'])
+    time.sleep(CONFIG['按键延迟'])

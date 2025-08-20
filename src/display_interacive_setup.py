@@ -4,6 +4,10 @@ import tkinter as tk
 from tkinter import ttk
 import threading
 
+# 设定中文字体，避免图像与界面文字乱码
+plt.rcParams['font.sans-serif'] = ['SimHei', 'DengXian']
+plt.rcParams['axes.unicode_minus'] = False
+
 from config import CONFIG
 
 
@@ -41,14 +45,14 @@ class ConstantsGUI:
         self.display_consts = display_consts
         self.root = None
         self.vars = None
-        self.font = ('Arial', 14)
+        self.font = ('SimHei', 14)
         self.thread = threading.Thread(target=self.create_gui, daemon=True)
         self.thread.start()
 
     def create_gui(self):
         self.root = tk.Tk()
         self.root.title("显示常量设置")
-        self.root.geometry(CONFIG['helper window size'])
+        self.root.geometry(CONFIG['辅助窗口大小'])
 
         style = ttk.Style()
         style.configure('Large.TLabel', font=self.font)
@@ -105,8 +109,7 @@ class ConstantsGUI:
         ttk.Button(self.root, text="全部更新", command=self.update_all,
                   style='Large.TButton').pack(pady=20)
 
-        ttk.Label(self.root, text="每次更新都会在控制台打印新的 DisplayConsts，\n"
-                                  "记得复制到 config.py 中",
+        ttk.Label(self.root, text="每次更新都会在控制台打印新的显示常量，\n记得复制到 config.py 中",
                   style='Large.TLabel').pack(pady=20)
 
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)

@@ -8,7 +8,7 @@ from config import CONFIG
 from src.display_interacive_setup import InteractiveSetup
 
 screen_capture = mss()
-piece_colors = CONFIG['piece colors']
+piece_colors = CONFIG['方块颜色']
 
 
 def simplified(pixels: np.array) -> np.array:
@@ -18,7 +18,7 @@ def simplified(pixels: np.array) -> np.array:
     :return: 仅包含 0/1 的棋盘数组
     """
     dark_boundary = [130, 100, 90]
-    if CONFIG['tetrio garbage']:
+    if CONFIG['tetrio垃圾行']:
         # 对垃圾行放宽暗色阈值
         dark_boundary = [70, 60, 60]
     field0 = np.array(pixels[:, :, 0] < dark_boundary[0], int)  # 蓝色通道
@@ -65,20 +65,20 @@ def get_field(interactive_setup: Optional[InteractiveSetup] = None) -> (np.array
 
     :return: 棋盘矩阵及下一块编号
     """
-    img = np.array(screen_capture.grab(CONFIG['display consts'].get_screen_bounds()))
-    field_img = CONFIG['display consts'].get_field_from_screen(img)
+    img = np.array(screen_capture.grab(CONFIG['显示常量'].get_screen_bounds()))
+    field_img = CONFIG['显示常量'].get_field_from_screen(img)
     pixels = simplified(field_img)
-    next_img = CONFIG['display consts'].get_next(img)
+    next_img = CONFIG['显示常量'].get_next(img)
     next_piece = get_figure_by_color(next_img)
 
     if interactive_setup is not None:
         interactive_setup.render_frame(field_img, pixels, next_img, next_piece)
 
     # 初始化为空棋盘
-    field = np.zeros((20 + CONFIG['extra rows'], 10))
+    field = np.zeros((20 + CONFIG['额外行数'], 10))
     # 计算网格中心点
     cell_size = pixels.shape[1] // 10
-    vertical_centers = np.array(np.linspace(cell_size // 2, pixels.shape[0] + cell_size // 2, 21 + CONFIG['extra rows'])[:-1], int)
+    vertical_centers = np.array(np.linspace(cell_size // 2, pixels.shape[0] + cell_size // 2, 21 + CONFIG['额外行数'])[:-1], int)
     if vertical_centers[-1] > pixels.shape[0]:
         print("宽高比例非 1:2，单元格大小可能不正确")
         return field, next_piece
@@ -97,7 +97,7 @@ def get_field(interactive_setup: Optional[InteractiveSetup] = None) -> (np.array
                 nearby[k] = pixels[v + v_offset][h + h_offset]
             if np.mean(nearby) > 0.75:
                 field[i][j] = 1
-                if CONFIG['print piece color'] and i < 3:
+                if CONFIG['打印方块颜色'] and i < 3:
                     piece_bgr = field_img[v][h][:3].astype(dtype=int)
                     print(f'新方块的 RGB 颜色: '
                           f'({piece_bgr[2]}, {piece_bgr[1]}, {piece_bgr[0]})')

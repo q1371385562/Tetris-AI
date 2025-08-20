@@ -22,17 +22,17 @@ except ImportError:  # 直接运行时回退到相对路径
 
 class AI:
     def __init__(self):
-        self.play_safe = CONFIG['play safe']
+        self.play_safe = CONFIG['保守模式']
         self.start_time = time.time()
         self.speed = 1
-        self.clearing = CONFIG['play for survival']
+        self.clearing = CONFIG['生存模式']
         self.held_piece = -1
         self.scared = False
-        self.choices_for_2nd = CONFIG['starting choices for 2nd']
+        self.choices_for_2nd = CONFIG['第二块搜索宽度']
 
     def hold_piece(self, piece_idx):
         click_key(hold)
-        if CONFIG['debug status'] >= 1:
+        if CONFIG['调试等级'] >= 1:
             print(f'暂存 {name_piece(piece_idx)}，释放 {name_piece(self.held_piece)}')
         piece_idx, self.held_piece = self.held_piece, piece_idx
         return piece_idx
@@ -97,16 +97,16 @@ class AI:
 
     def update_state(self, field):
         blank_cnt, max_height, _, _ = self.find_roofs(field)
-        if self.clearing and CONFIG['debug status']:
+        if self.clearing and CONFIG['调试等级']:
             print('正在清理')
         if max_height >= 13 or self.speed == 3:
             self.scared = True
-            if CONFIG['debug status'] >= 1:
+            if CONFIG['调试等级'] >= 1:
                 print('害怕模式')
         else:
             self.scared = False
 
-    def get_score(self, field: np.array, verbose=(CONFIG['debug status'] >= 2)) -> (float, bool):
+    def get_score(self, field: np.array, verbose=(CONFIG['调试等级'] >= 2)) -> (float, bool):
         """评估当前局面的好坏
 
         :param field: 当前棋盘
@@ -231,8 +231,8 @@ class AI:
     def place_piece(self, piece: int, rotation: int, x_pos: int, height: int, rot_now=0, x_pos_now=3, depth=0):
         """将方块移动到指定位置（下降前）并可选验证"""
         if depth == 3:
-            if CONFIG['debug status'] >= 1:
-                print('place_piece 深度达到 3')
+            if CONFIG['调试等级'] >= 1:
+                print('放置方块递归深度达到 3')
             return
         rotate = (rotation - rot_now) % 4
         if rotate < 3:
@@ -248,25 +248,25 @@ class AI:
                 click_key(mv_left)
 
         # 验证方块是否放置在预期位置
-        if CONFIG['confirm placement']:
+        if CONFIG['确认放置']:
             time.sleep(0.09)
             field = get_field()[0]
             actual_pos = find_figure(field, piece, x_pos, max(0, 16 - height))
             if not actual_pos:
-                if CONFIG['debug status'] >= 1:
+                if CONFIG['调试等级'] >= 1:
                     print('未找到方块')
             elif [rotation, x_pos] not in actual_pos:
-                if CONFIG['debug status'] >= 1:
+                if CONFIG['调试等级'] >= 1:
                     print(f'发现误操作，实际位置 {actual_pos[0]}，应为 {rotation, x_pos}')
                 self.place_piece(piece, rotation, x_pos, height,
                                  rot_now=actual_pos[0][0], x_pos_now=actual_pos[0][1], depth=depth+1)
             else:
-                if CONFIG['debug status'] >= 1:
+                if CONFIG['调试等级'] >= 1:
                     print('位置正确')
 
     def place_piece_delay(self):
-        if CONFIG['game'] == 'tetr.io':
-            if (CONFIG['override delay'] or not self.scared) and self.speed == 1:
+        if CONFIG['游戏类型'] == 'tetr.io':
+            if (CONFIG['忽略延迟'] or not self.scared) and self.speed == 1:
                 click_key(place_k)
                 time.sleep(0.05)  # 稍等方块完全落下
             elif not self.scared and self.speed == 2:
@@ -274,7 +274,7 @@ class AI:
                 time.sleep(0.3)
                 release_key(mv_down)
 
-        elif CONFIG['game'] == 'original':
+        elif CONFIG['游戏类型'] == 'original':
             if time.time() - self.start_time < 160 and not self.scared and not self.play_safe:
                 if time.time() - self.start_time < 120:
                     click_key(mv_down)

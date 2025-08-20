@@ -1,6 +1,10 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
+# 设定中文字体，避免窗口中文字出现乱码
+plt.rcParams['font.sans-serif'] = ['SimHei', 'DengXian']
+plt.rcParams['axes.unicode_minus'] = False
+
 class Visualizer:
     """简单的俄罗斯方块棋盘可视化窗口"""
 

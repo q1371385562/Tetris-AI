@@ -37,8 +37,8 @@ tetrio_default = DisplayConsts(top=465, bottom=1780, left=1590, right=2250,
 
 
 # -------------------------------- 需要手动设置 --------------------------------
-# 添加你自己的参数，并在 CONFIG 中修改 'display consts'
-# 将 'debug status' 设为 3 可以查看机器人看到的内容并调整数值（会打开两个窗口）
+# 添加你自己的参数，并在 CONFIG 中修改 '显示常量'
+# 将 '调试等级' 设为 3 可以查看机器人看到的内容并调整数值（会打开两个窗口）
 # 或者，截取游戏截图并在画图等软件中查看像素坐标
 
 # my_consts = DisplayConsts()
@@ -46,44 +46,44 @@ tetrio_default = DisplayConsts(top=465, bottom=1780, left=1590, right=2250,
 
 CONFIG = {
     # ---------- 每次运行 ----------
-    'debug status': 1,  # 数值越大信息越多，0 表示无输出；3 为交互式设置模式
-    # 为 True 时，识别到方块颜色后会打印出来，便于设置 'piece colors'
+    '调试等级': 1,  # 数值越大信息越多，0 表示无输出；3 为交互式设置模式
+    # 为 True 时，识别到方块颜色后会打印出来，便于设置 '方块颜色'
     # 但需要注意当前方块的颜色可能与下一帧不同
-    'print piece color': False,
-    'key press delay': 0.02,  # 如果出现误按可增大此值，想更快则减小
-    'tetrio garbage': True,
-    'starting choices for 2nd': 8,
+    '打印方块颜色': False,
+    '按键延迟': 0.02,  # 如果出现误按可增大此值，想更快则减小
+    'tetrio垃圾行': True,
+    '第二块搜索宽度': 8,
     # 为 True 时，会多截一帧以确认方块位置
     # 会降低速度但提升稳定性
-    'confirm placement': True,
-    'play safe': False,  # 启用后 AI 更加保守
-    'play for survival': False,  # True 时以“清理”模式开始
-    'override delay': False,  # True 时即使害怕也会硬降所有方块
+    '确认放置': True,
+    '保守模式': False,  # 启用后 AI 更加保守
+    '生存模式': False,  # True 时以“清理”模式开始
+    '忽略延迟': False,  # True 时即使害怕也会硬降所有方块
 
     # ---------- 用户相关 ----------
-    'display consts': tetrio_default,
-    'helper window size': '768x1536',
+    '显示常量': tetrio_default,
+    '辅助窗口大小': '768x1536',
 
     # ---------- 游戏相关 ----------
-    'game': 'tetr.io',
-    'playing field size': [20, 10],
-    'piece colors': tetrio_colors,
-    'extra rows': 2,  # 某些游戏（如 tetr.io）会在主区域上方生成方块
+    '游戏类型': 'tetr.io',
+    '棋盘大小': [20, 10],
+    '方块颜色': tetrio_colors,
+    '额外行数': 2,  # 某些游戏（如 tetr.io）会在主区域上方生成方块
 
     # ---------- 其他 ----------
-    'gave warning': False,
+    '已警告': False,
 }
 
 
 def configure_fast():
-    CONFIG['starting choices for 2nd'] = 8
-    CONFIG['confirm placement'] = False
-    CONFIG['play for survival'] = True
-    CONFIG['override delay'] = True
+    CONFIG['第二块搜索宽度'] = 8
+    CONFIG['确认放置'] = False
+    CONFIG['生存模式'] = True
+    CONFIG['忽略延迟'] = True
 
 
 # 调用以使用预设
 configure_fast()
 
-assert not (CONFIG['print piece color'] and CONFIG['confirm placement']), \
-    '请禁用 "confirm placement" 以避免与颜色输出混淆'
+assert not (CONFIG['打印方块颜色'] and CONFIG['确认放置']), \
+    '请禁用 "确认放置" 以避免与颜色输出混淆'
