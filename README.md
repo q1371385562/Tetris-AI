@@ -31,7 +31,7 @@ pip install -r requirements.txt
 3. 将 `CONFIG` 中的 `display consts` 设置为你的实例
 4. 如有需要，定义 `colors` 数组以识别下一块的颜色
 5. 调整其他配置参数
-6. 运行 `src/main.py`
+6. 在项目根目录运行 `python src/main.py`，或使用模块方式 `python -m src.main`
 7. 切换到游戏窗口
 
 ### 运行时调节

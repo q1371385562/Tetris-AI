@@ -1,14 +1,21 @@
 import time
-
 import winsound
+import numpy as np
 
 from config import CONFIG, name_piece
-from src.scan_field import get_field
-from src.display_interacive_setup import InteractiveSetup, ConstantsGUI
-from src.figures import type_figure_ext
-from src.AI_main import AI
-from src.visualizer import Visualizer
-import numpy as np
+
+try:  # 兼容包内运行与直接运行两种方式
+    from .scan_field import get_field
+    from .display_interacive_setup import InteractiveSetup, ConstantsGUI
+    from .figures import type_figure_ext
+    from .AI_main import AI
+    from .visualizer import Visualizer
+except ImportError:
+    from scan_field import get_field
+    from display_interacive_setup import InteractiveSetup, ConstantsGUI
+    from figures import type_figure_ext
+    from AI_main import AI
+    from visualizer import Visualizer
 
 
 def main():
