@@ -1,15 +1,23 @@
 from typing import List
 
-from find_landings import all_landings
 import numpy as np
-from direct_keys import *
 import time
-from figures import piece_weight, find_figure
-from scan_field import get_field
-from config import CONFIG, name_piece
 import keyboard
 
-from src.position import Position
+from config import CONFIG, name_piece
+
+try:  # 兼容包内运行与直接运行
+    from .find_landings import all_landings
+    from .direct_keys import *
+    from .figures import piece_weight, find_figure
+    from .scan_field import get_field
+    from .position import Position
+except ImportError:  # 直接运行时回退到相对路径
+    from find_landings import all_landings
+    from direct_keys import *
+    from figures import piece_weight, find_figure
+    from scan_field import get_field
+    from position import Position
 
 
 class AI:

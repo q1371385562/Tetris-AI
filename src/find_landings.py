@@ -3,8 +3,12 @@ from typing import List
 
 import numpy as np
 
-from position import Position
-from figures import array_of_figures as pieces
+try:  # 兼容包内运行与直接运行
+    from .position import Position
+    from .figures import array_of_figures as pieces
+except ImportError:  # 直接运行时回退
+    from position import Position
+    from figures import array_of_figures as pieces
 
 
 def check_collision(field, piece, piece_pos, piece_idx):
