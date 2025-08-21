@@ -6,13 +6,13 @@ from config import CONFIG, name_piece
 
 try:  # 兼容包内运行与直接运行两种方式
     from .scan_field import get_field
-    from .display_interacive_setup import InteractiveSetup, ConstantsGUI
+    from .display_interacive_setup import InteractiveSetup, ConstantsGUI, select_region
     from .figures import type_figure_ext
     from .AI_main import AI
     from .visualizer import Visualizer
 except ImportError:
     from scan_field import get_field
-    from display_interacive_setup import InteractiveSetup, ConstantsGUI
+    from display_interacive_setup import InteractiveSetup, ConstantsGUI, select_region
     from figures import type_figure_ext
     from AI_main import AI
     from visualizer import Visualizer
@@ -25,6 +25,8 @@ def main():
     position = None
     interactive_setup = None
     可视化 = Visualizer()
+    if CONFIG.get('框选识别区域', False):
+        CONFIG['显示常量'] = select_region(CONFIG['额外行数'])
     if CONFIG['调试等级'] >= 3:
         ConstantsGUI(CONFIG['显示常量'])
         interactive_setup = InteractiveSetup()

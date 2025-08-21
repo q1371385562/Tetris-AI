@@ -3,12 +3,21 @@ import numpy as np
 import tkinter as tk
 from tkinter import ttk
 import threading
+from mss import mss
+
+try:
+    from .display_consts import DisplayConsts
+except ImportError:  # 直接运行脚本时
+    from display_consts import DisplayConsts
 
 # 设定中文字体，避免图像与界面文字乱码
 plt.rcParams['font.sans-serif'] = ['SimHei', 'DengXian']
 plt.rcParams['axes.unicode_minus'] = False
 
 from config import CONFIG
+
+
+screen_capture = mss()
 
 
 class InteractiveSetup:
@@ -138,4 +147,44 @@ class ConstantsGUI:
 
     def is_alive(self):
         return self.thread.is_alive()
+
+
+def select_region(num_extra_rows=0):
+    """截图并让用户手动框选棋盘与下一块区域"""
+    import matplotlib
+    matplotlib.use('TkAgg')
+
+    img = np.array(screen_capture.grab(screen_capture.monitors[0]))
+
+    # 选择主棋盘区域
+    fig, ax = plt.subplots()
+    ax.imshow(img[:, :, 2::-1])
+    ax.set_title("请依次点击棋盘区域的左上角和右下角")
+    ax.axis('off')
+    pts = plt.ginput(2)
+    plt.close(fig)
+
+    left = int(min(pts[0][0], pts[1][0]))
+    right = int(max(pts[0][0], pts[1][0]))
+    top = int(min(pts[0][1], pts[1][1]))
+    bottom = int(max(pts[0][1], pts[1][1]))
+
+    # 选择下一块区域
+    fig, ax = plt.subplots()
+    ax.imshow(img[:, :, 2::-1])
+    ax.set_title("请依次点击下一块区域的左上角和右下角")
+    ax.axis('off')
+    pts = plt.ginput(2)
+    plt.close(fig)
+
+    next_left = int(min(pts[0][0], pts[1][0]))
+    next_right = int(max(pts[0][0], pts[1][0]))
+    next_top = int(min(pts[0][1], pts[1][1]))
+    next_bottom = int(max(pts[0][1], pts[1][1]))
+
+    consts = DisplayConsts(top, bottom, left, right,
+                           next_top, next_bottom, next_left, next_right,
+                           num_extra_rows=num_extra_rows)
+    print("新的显示常量:", consts)
+    return consts
 
