@@ -8,12 +8,17 @@ try:
     from .scan_field import get_field
     from .figures import type_figure_ext
     from .AI_main import AI
-    from .modern_gui import select_region, BoardGUI
 except ImportError:
     from scan_field import get_field
     from figures import type_figure_ext
     from AI_main import AI
-    from modern_gui import select_region, BoardGUI
+
+try:
+    from .modern_gui import select_region, BoardGUI
+except ImportError as e:
+    raise ImportError(
+        "缺少 PySimpleGUI 依赖，请先执行 `pip install -r requirements.txt` 后再运行。"
+    ) from e
 
 
 def main():
